@@ -15,6 +15,7 @@ export const Login = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      
 
       try {
         const user = await loginUser(email, password);
@@ -27,6 +28,7 @@ export const Login = () => {
         
       } catch (error) {
         alert('Usuario no encontrado')
+       
       }
     
     };
