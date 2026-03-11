@@ -1,9 +1,16 @@
+import { Sidebar } from "../components/Sidebar"
 
 export const Home = () => {
   return (
-    <div className="flex justify-center min-h-screen items-center">
-
-      <h1 className="text-black font-extrabold text-5xl text-center">Bienvenido al home</h1>
+    <div className="flex w-full h-full">
+      <div className="hidden xl:block w-80 h-full xl:fixed">
+        <Sidebar />
+      </div>
+      <div className="w-full xl:ml-80 h-full">
+        <h1 className="text-black font-extrabold text-5xl text-center">
+          Dashboard
+        </h1>
+      </div>
     </div>
-  )
+  );
 }
