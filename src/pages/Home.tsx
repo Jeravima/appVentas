@@ -1,3 +1,4 @@
+import { BarCharts } from "../components/BarCharts";
 import { Sidebar } from "../components/Sidebar"
 
 export const Home = () => {
@@ -10,6 +11,7 @@ export const Home = () => {
         <h1 className="text-black font-extrabold text-5xl text-center">
           Dashboard
         </h1>
+        <BarCharts/>
       </div>
     </div>
   );
