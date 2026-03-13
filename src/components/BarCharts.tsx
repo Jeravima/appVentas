@@ -1,6 +1,12 @@
 import {Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 
-const datas = [
+
+interface DataType{
+  name: string,
+  venta: number,
+  lista: number,
+}
+const datas: DataType[] = [
   {
     name: 'Enero 2026',
     venta: 7500000,
@@ -27,12 +33,15 @@ export const BarCharts = () => {
   return (
     <div className="w-full h-80 bg-white p-4 rounded-xl shadow">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={datas} >
+        <BarChart
+         
+          data={datas}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis width="auto"/>
           <Tooltip />
-          <Bar dataKey="venta" fill="#3ab64e" radius={6} />
+          <Bar dataKey="venta" fill="#3ab64e" radius={[6,10,0,0]} />
           <Bar dataKey="lista" fill="#D72009" radius={6} />
         </BarChart>
       </ResponsiveContainer>
