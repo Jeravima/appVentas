@@ -1,24 +1,38 @@
 import { useState } from "react";
-import { loginUser } from "../services/auth";
+import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
+
 
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+
+  
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const user = await loginUser(email, password);
-      if (user) {
-        navigate("/home");
-      }
-    } catch (error) {
-      alert("Usuario no encontrado");
+
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if(error) {
+     console.log(error)
+     toast.error('Email o contraseña invalida')
+     
+      return
     }
+
+    navigate('/home')
+
   };
+
 
   return (
     <>
