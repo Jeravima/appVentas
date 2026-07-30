@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { Home } from "../pages/Home";
 import { Login } from "../pages/Login";
-import { Settings } from "../pages/Settings";
+import { Resumen } from "../pages/Resumen";
 import { Layout } from "../layout/Layout";
 
 export const router = createBrowserRouter([
@@ -14,8 +14,8 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/settings",
-        element: <Settings />,
+        path: "/resumen",
+        element: <Resumen />,
       },
     ]
   },

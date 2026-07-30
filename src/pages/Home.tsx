@@ -1,35 +1,66 @@
 import { useState } from "react";
 import { supabase } from "../supabase/client";
 import toast from "react-hot-toast";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+
+const hoy = new Date().toISOString().slice(0,10)
 
 type FormData = {
-  ventas: number;
-  valorLista: number;
-  porciones: number;
-  pizzetas: number;
-  fecha: string;
+  venta: string;
+  lista: string;
+  porciones: string;
+  pizzetas: string;
+  fecha: typeof hoy
 };
 
 export const Home = () => {
   const [form, setForm] = useState<FormData>({
-    ventas: 0,
-    valorLista: 0,
-    porciones: 0,
-    pizzetas: 0,
-    fecha: "",
+    venta: "",
+    lista: "",
+    porciones: "",
+    pizzetas: "",
+    fecha: hoy,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
+  const [saving, setSaving] = useState(false);
+  //console.log(import.meta.env.)
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "number" ? Number(value) : value,
-    }));
-  };
+  const update =
+    (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value, type } = e.target;
+
+  //   setForm((prev) => ({
+  //     ...prev,
+  //     [name]: type === "number" ? Number(value) : value,
+  //   }));
+  // };
 
   const guardarDatos = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (
+      !form.venta ||
+      !form.lista ||
+      !form.porciones ||
+      !form.pizzetas ||
+      !form.fecha
+    ) {
+      toast.error("Completa todos los campos");
+      return;
+    }
+    setSaving(true);
 
     const { error } = await supabase
     .from("ventas")
@@ -38,10 +69,12 @@ export const Home = () => {
         fecha: form.fecha,
         porciones: form.porciones,
         pizzetas: form.pizzetas,
-        venta: form.ventas,
-        lista: form.valorLista,
+        venta: form.venta,
+        lista: form.lista,
       },
     ]);
+
+    setSaving(false);
 
     if (error) {
       console.error(error);
@@ -52,63 +85,90 @@ export const Home = () => {
     toast("Datos guardados");
 
     setForm({
-      ventas: 0,
-      valorLista: 0,
-      porciones: 0,
-      pizzetas: 0,
-      fecha: "",
+      venta: "",
+      lista: "",
+      porciones: "",
+      pizzetas: "",
+      fecha: hoy,
     });
   };
 
   return (
-    <div className="flex flex-col w-full justify-center ">
-      <h1 className="text-2xl font-bold ">Dashboard</h1>
-      <div className="mt-10">
-        <form onSubmit={guardarDatos}>
-          <label>Venta</label>
-          <input
-            type="number"
-            name="ventas"
-            value={form.ventas}
-            onChange={handleChange}
-            placeholder="Ventas"
-          />
-
-          <input
-            type="number"
-            name="valorLista"
-            value={form.valorLista}
-            onChange={handleChange}
-            placeholder="Valor lista"
-          />
-
-          <input
-            type="number"
-            name="porciones"
-            value={form.porciones}
-            onChange={handleChange}
-            placeholder="Porciones"
-          />
-
-          <input
-            type="number"
-            name="pizzetas"
-            value={form.pizzetas}
-            onChange={handleChange}
-            placeholder="Pizzetas"
-          />
-
-          <input
-            type="date"
-            name="fecha"
-            value={form.fecha}
-            onChange={handleChange}
-          />
-
-          <button type="submit">Guardar</button>
-        </form>
-      
-      </div>
+    <div className="mx-auto max-w-2xl">
+      <Card className="border-none shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-2xl">Nuevo registro</CardTitle>
+          <CardDescription>
+            Ingresa los datos del día y guárdalos.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={guardarDatos} className="grid gap-5">
+            <div className="grid gap-2 sm:grid-cols-2 sm:gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="venta" >Venta</Label>
+                <Input
+                  id="venta"
+                  type="number"
+                  
+                  placeholder="0"
+                  value={form.venta}
+                  onChange={update("venta")}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="lista">Lista</Label>
+                <Input
+                  id="lista"
+                  type="number"
+                  
+                  placeholder="0"
+                  value={form.lista}
+                  onChange={update("lista")}
+                />
+              </div>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2 sm:gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="porciones">Porciones</Label>
+                <Input
+                  id="porciones"
+                  type="number"
+                  placeholder="0"
+                  value={form.porciones}
+                  onChange={update("porciones")}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="pizzetas">Pizzetas</Label>
+                <Input
+                  id="pizzetas"
+                  type="number"
+                  placeholder="0"
+                  value={form.pizzetas}
+                  onChange={update("pizzetas")}
+                />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="fecha">Fecha</Label>
+              <Input
+                id="fecha"
+                type="date"
+                value={form.fecha}
+                onChange={update("fecha")}
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={saving}
+              className="w-full sm:w-auto sm:justify-self-end"
+            >
+              {saving ? "Guardando..." : "Guardar"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
