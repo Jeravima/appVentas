@@ -12,17 +12,17 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 
-const hoy = new Date().toISOString().slice(0,10)
+const hoy = new Date().toISOString().slice(0, 10);
 
 type FormData = {
   venta: string;
   lista: string;
   porciones: string;
   pizzetas: string;
-  fecha: typeof hoy
+  fecha: typeof hoy;
 };
 
-export const Home = () => {
+export const HomePage = () => {
   const [form, setForm] = useState<FormData>({
     venta: "",
     lista: "",
@@ -32,20 +32,10 @@ export const Home = () => {
   });
 
   const [saving, setSaving] = useState(false);
-  //console.log(import.meta.env.)
 
   const update =
     (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value }));
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value, type } = e.target;
-
-  //   setForm((prev) => ({
-  //     ...prev,
-  //     [name]: type === "number" ? Number(value) : value,
-  //   }));
-  // };
 
   const guardarDatos = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,9 +52,7 @@ export const Home = () => {
     }
     setSaving(true);
 
-    const { error } = await supabase
-    .from("ventas")
-    .insert([
+    const { error } = await supabase.from("ventas").insert([
       {
         fecha: form.fecha,
         porciones: form.porciones,
@@ -106,11 +94,10 @@ export const Home = () => {
           <form onSubmit={guardarDatos} className="grid gap-5">
             <div className="grid gap-2 sm:grid-cols-2 sm:gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="venta" >Venta</Label>
+                <Label htmlFor="venta">Venta</Label>
                 <Input
                   id="venta"
                   type="number"
-                  
                   placeholder="0"
                   value={form.venta}
                   onChange={update("venta")}
@@ -121,7 +108,6 @@ export const Home = () => {
                 <Input
                   id="lista"
                   type="number"
-                  
                   placeholder="0"
                   value={form.lista}
                   onChange={update("lista")}
