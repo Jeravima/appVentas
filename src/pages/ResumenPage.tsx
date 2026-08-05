@@ -18,36 +18,8 @@ import { supabase } from "../supabase/client";
 import { useState } from "react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
+import { formatNumber } from "@/lib/format";
 
-type Registro = {
-  id: number;
-  venta: number;
-  lista: number;
-  porciones: number;
-  pizzetas: number;
-  fecha: string;
-  created_at: number;
-};
-
-export function calcularTotales(ventas: Registro[]) {
-  return ventas.reduce(
-    (acumulado, r) => ({
-      venta: acumulado.venta + Number(r.venta),
-      lista: acumulado.lista + Number(r.lista),
-      porciones: acumulado.porciones + Number(r.porciones),
-      pizzetas: acumulado.pizzetas + Number(r.pizzetas),
-    }),
-    { venta: 0, lista: 0, porciones: 0, pizzetas: 0 },
-  );
-}
-
-export function formatoDinero(valor: number) {
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(valor);
-}
 
 function rangoDelMes(mes: string) {
   const [year, month] = mes.split("-").map(Number);
@@ -85,6 +57,24 @@ export const ResumenPage = () => {
     },
   });
 
+  const registros = ventas ?? [];
+  const totalVenta = registros.reduce(
+    (total, registro) => total + Number(registro.venta),
+    0,
+  );
+  const totalLista = registros.reduce(
+    (total, registro) => total + Number(registro.lista),
+    0,
+  );
+  const totalPorciones = registros.reduce(
+    (total, registro) => total + (registro.porciones ?? 0),
+    0,
+  );
+  const totalPizzetas = registros.reduce(
+    (total, registro) => total + (registro.pizzetas ?? 0),
+    0,
+  );
+
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-4">
@@ -92,7 +82,7 @@ export const ResumenPage = () => {
         <Input
           id="mes"
           type="month"
-          className="w-44"
+          className="w-44 mt-2"
           value={mes}
           onChange={(e) => setMes(e.target.value)}
         />
@@ -117,45 +107,72 @@ export const ResumenPage = () => {
               Aún no hay registros. Agrega uno desde el inicio.
             </p>
           ) : (
-            <div className="overflow-x-auto rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead className="text-right">Venta</TableHead>
-                    <TableHead className="text-right">Lista</TableHead>
-                    <TableHead className="text-right">Porciones</TableHead>
-                    <TableHead className="text-right">Pizzetas</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {ventas.map((r) => (
-                    <TableRow key={r.id}>
-                      <TableCell className="font-medium">
-                        {r.fecha
-                          ? new Date(r.fecha).toLocaleDateString("es-MX", {
-                              timeZone: "UTC",
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        ${Number(r.venta)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        ${Number(r.lista)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {r.porciones}
-                      </TableCell>
-                      <TableCell className="text-right">{r.pizzetas}</TableCell>
+            <>
+              <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <div className="rounded-md border bg-background p-4">
+                  <p className="text-sm text-muted-foreground">Venta</p>
+                  <p className="mt-1 text-xl font-semibold">
+                    ${formatNumber(totalVenta)}
+                  </p>
+                </div>
+                <div className="rounded-md border bg-background p-4">
+                  <p className="text-sm text-muted-foreground">Lista</p>
+                  <p className="mt-1 text-xl font-semibold">
+                    ${formatNumber(totalLista)}
+                  </p>
+                </div>
+                <div className="rounded-md border bg-background p-4">
+                  <p className="text-sm text-muted-foreground">Porciones</p>
+                  <p className="mt-1 text-xl font-semibold">{totalPorciones}</p>
+                </div>
+                <div className="rounded-md border bg-background p-4">
+                  <p className="text-sm text-muted-foreground">Pizzetas</p>
+                  <p className="mt-1 text-xl font-semibold">{totalPizzetas}</p>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Fecha</TableHead>
+                      <TableHead className="text-right">Venta</TableHead>
+                      <TableHead className="text-right">Lista</TableHead>
+                      <TableHead className="text-right">Porciones</TableHead>
+                      <TableHead className="text-right">Pizzetas</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {ventas.map((r) => (
+                      <TableRow key={r.id}>
+                        <TableCell className="font-medium">
+                          {r.fecha
+                            ? new Date(r.fecha).toLocaleDateString("es-MX", {
+                                timeZone: "UTC",
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${ formatNumber(   Number(r.venta))}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${ formatNumber(  Number(r.lista))}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {r.porciones}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {r.pizzetas}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
