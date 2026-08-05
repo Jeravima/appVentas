@@ -41,8 +41,6 @@ export const LoginPage = () => {
 
   return (
     <>
-      
-
       <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
         <Card className="w-full max-w-md border-none shadow-lg">
           <CardHeader>
@@ -75,8 +73,6 @@ export const LoginPage = () => {
                 {loading ? "Ingresando..." : "Ingresar"}
               </Button>
             </form>
-
-            
           </CardContent>
         </Card>
       </div>

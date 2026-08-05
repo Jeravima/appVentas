@@ -1,24 +1,26 @@
-# 📊 Dashboard de Ventas
+#  Dashboard de Ventas
 
-Aplicación web para visualizar métricas de ventas mediante gráficos interactivos.  
+Aplicación web para visualizar métricas de ventas.  
 Permite autenticación de usuarios y almacenamiento de datos en la nube.
 
-## 🚀 Tecnologías
+##  Tecnologías
 
 - React
 - TypeScript
 - Tailwind CSS
-- Firebase (Authentication y Firestore)
+- Supabase (Authentication y Database)
 - Vite
+- Shadcn
+- Tanstack Query
 
-## ✨ Características
 
-- 🔐 Autenticación de usuarios
-- 📈 Visualización de ventas mediante gráficos
-- 💰 Panel con métricas de ingresos
-- 📅 Seguimiento de ventas por fecha
-- ☁️ Base de datos en la nube con Firebase
-- 📱 Diseño responsive
+##  Características
+
+- Autenticación de usuarios
+- Visualización de ventas mediante tarjetas
+- Seguimiento de ventas por fecha
+- Base de datos en la nube con Supabase
+- Diseño responsive
 
 
 
